@@ -8,9 +8,11 @@ int main(void)
 	int i;
 	//Allocate space for vectors A,B,andc
 	float alpha =2.0;
-	float *A = (float*)malloc(sizeof(float)*VECTOR_SIZE)
-	float *B = (float*)malloc(sizeof(float)*VECTOR_SIZE)
-	float *C = (float*)malloc(sizeof(float)*VECTOR_SIZE)
+
+	float *A = (float*)malloc(sizeof(float)*VECTOR_SIZE);
+	float *B = (float*)malloc(sizeof(float)*VECTOR_SIZE);
+	float *C = (float*)malloc(sizeof(float)*VECTOR_SIZE);
+
 	for(i = 0;i < VECTOR_SIZE;i++)
 	{
 		A[i] = i;
