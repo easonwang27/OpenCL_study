@@ -2,11 +2,17 @@
 #include <stdlib.h>
 #include <CL/cl.h>
 
+#define PROGRAM_FILE "get_kernel.cl"
 #define VECTOR_SIZE 1024
+
 int main(void)
 {
 	int i;
+    FILE *program_handle;
 	//Allocate space for vectors A,B,andc
+
+	size_t program_size, log_size;
+    char *program_buffer, *program_log;
 	float alpha =2.0;
 
 	float *A = (float*)malloc(sizeof(float)*VECTOR_SIZE);
@@ -57,6 +63,18 @@ int main(void)
 		perror("clCreateContext error!\n");
 		exit(1);
 	}
+	program_handle = fopen(PROGRAM_FILE, "r");
+   if(program_handle == NULL) {
+      perror("Couldn't find the program file");
+      exit(1);
+   }
+   fseek(program_handle, 0, SEEK_END);
+   program_size = ftell(program_handle);
+   rewind(program_handle);
+   program_buffer = (char*)malloc(program_size + 1);
+   program_buffer[program_size] = '\0';
+   fread(program_buffer, sizeof(char), program_size, program_handle);
+   fclose(program_handle);
 	//create a command queue
 	cl_command_queue command_queue = clCreateCommandQueue(context,devices_list[0],0,&clStatus);
 	if(clStatus < 0)
@@ -74,4 +92,53 @@ int main(void)
 		perror("clCreateBuffer error!\n");
 		exit(1);
 	}
+	//copy buffer A and B to device
+	clStatus = clEnqueueWriteBuffer(command_queue,A_clmem,CL_TRUE,0,VECTOR_SIZE*sizeof(float),
+			A,0,NULL,NULL);
+
+	clStatus = clEnqueueWriteBuffer(command_queue,B_clmem,CL_TRUE,0,VECTOR_SIZE*sizeof(float),
+			B,0,NULL,NULL);
+
+	cl_program  program = clCreateProgramWithSource(context,1,(const char **)&program_buffer,NULL,&clStatus);
+
+	clStatus = clBuildProgram(program,1,devices_list,NULL,NULL,NULL);
+	cl_kernel kernel = clCreateKernel(program,"saxpy_kernel",&clStatus);
+	if(clStatus < 0)
+	{
+		perror("create kernel fail!\n");
+	}
+	//set the argumemts of the kernel
+	clStatus = clSetKernelArg(kernel,0,sizeof(float),(void *)&alpha);
+	clStatus = clSetKernelArg(kernel,1,sizeof(float),(void *)&A_clmem);
+	clStatus = clSetKernelArg(kernel,2,sizeof(float),(void *)&B_clmem);
+	clStatus = clSetKernelArg(kernel,3,sizeof(float),(void *)&C_clmem);
+	//excute the OpenCL kernel on the list
+	size_t global_size =VECTOR_SIZE;
+	size_t local_size =64;
+	clStatus = clEnqueueNDRangeKernel(command_queue,kernel,1,NULL,&global_size,&local_size,0,NULL,NULL);
+	//read the cl memory c_clmem  on device to the host variable C
+	clStatus = clEnqueueReadBuffer(command_queue,C_clmem,CL_TRUE,0,VECTOR_SIZE*sizeof(float),C,0,NULL,NULL);
+
+	clStatus  = clFlush(command_queue);
+	clStatus =clFinish(command_queue);
+
+	for(i = 0; i< VECTOR_SIZE;i++)
+	{
+		printf("%f * %f +%f = %f\n",alpha,A[i],B[i],C[i]);
+	}
+
+	clStatus = clReleaseKernel(kernel);
+	clStatus = clReleaseProgram(program);
+	clStatus = clReleaseMemObject(A_clmem);
+	clStatus = clReleaseMemObject(B_clmem);
+	clStatus = clReleaseMemObject(C_clmem);
+	clStatus = clReleaseCommandQueue(command_queue);
+	clStatus = clReleaseContext(context);
+	free(A);
+	free(B);
+	free(C);
+	free(platforms);
+	free(devices_list);
+	return 0;
+
 }
