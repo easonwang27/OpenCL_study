@@ -57,5 +57,21 @@ int main(void)
 		perror("clCreateContext error!\n");
 		exit(1);
 	}
+	//create a command queue
+	cl_command_queue command_queue = clCreateCommandQueue(context,devices_list[0],0,&clStatus);
+	if(clStatus < 0)
+	{
+		perror("clCreateCommandQueue error!\n");
+		exit(1);
+	}
+	//create memory buffers on the device for each vector
 
+	cl_mem A_clmem = clCreateBuffer(context,CL_MEM_READ_ONLY,sizeof(float)*VECTOR_SIZE,NULL,&clStatus);
+	cl_mem B_clmem = clCreateBuffer(context,CL_MEM_READ_ONLY,sizeof(float)*VECTOR_SIZE,NULL,&clStatus);
+	cl_mem C_clmem = clCreateBuffer(context,CL_MEM_READ_ONLY,sizeof(float)*VECTOR_SIZE,NULL,&clStatus);
+	if(clStatus < 0)
+	{
+		perror("clCreateBuffer error!\n");
+		exit(1);
+	}
 }
