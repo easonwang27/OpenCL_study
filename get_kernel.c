@@ -2,9 +2,21 @@
 #include <stdlib.h>
 #include <CL/cl.h>
 
+#define VECTOR_SIZE 1024
 int main(void)
 {
 	int i;
+	//Allocate space for vectors A,B,andc
+	float alpha =2.0;
+	float *A = (float*)malloc(sizeof(float)*VECTOR_SIZE)
+	float *B = (float*)malloc(sizeof(float)*VECTOR_SIZE)
+	float *C = (float*)malloc(sizeof(float)*VECTOR_SIZE)
+	for(i = 0;i < VECTOR_SIZE;i++)
+	{
+		A[i] = i;
+		B[i] = VECTOR_SIZE-i;
+		C[i] = 0;
+	}
 	cl_platform_id *platforms;
 	cl_int num_platforms;
 	cl_int  clStatus;
