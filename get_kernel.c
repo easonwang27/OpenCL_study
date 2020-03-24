@@ -103,6 +103,14 @@ int main(void)
 	cl_program  program = clCreateProgramWithSource(context,1,(const char **)&program_buffer,&program_size,&clStatus);
 
 	clStatus = clBuildProgram(program,1,devices_list,options,NULL,NULL);
+	if(clStatus < 0)
+	{
+		clGetProgramBuildInfo(program,devices_list,CL_PROGRAM_BUILD_LOG,0,NULL,&log_size);
+		program_log = (char*)calloc(log_size+1,sizeof(char));
+		clGetProgramBuildInfo(program,devices_list,CL_PROGRAM_BUILD_LOG,log_size+1,program_log,NULL);
+		printf("%s\n",program_log);
+		free(program_log);
+	}
 	cl_kernel kernel = clCreateKernel(program,"saxpy_kernel",&clStatus);
 	if(clStatus < 0)
 	{
