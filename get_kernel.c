@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-
 #include <CL/cl.h>
+
 int main(void)
 {
 	int i;
@@ -34,8 +34,14 @@ int main(void)
 		perror("clGetPlatformIDs step 1 failed\n");
 		exit(1);
 	}
-
 	printf("num_devices = %d\n",num_devices);
-
+	//creat one opencl context
+	cl_context context;
+	context = clCreateContext(NULL,num_devices,devices_list,NULL,NULL,&clStatus);
+	if(clStatus < 0)
+	{
+		perror("clCreateContext error!\n");
+		exit(1);
+	}
 
 }
