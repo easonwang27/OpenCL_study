@@ -99,7 +99,7 @@ int main(void)
 	clStatus = clEnqueueWriteBuffer(command_queue,B_clmem,CL_TRUE,0,VECTOR_SIZE*sizeof(float),
 			B,0,NULL,NULL);
 
-	cl_program  program = clCreateProgramWithSource(context,1,(const char **)&program_buffer,NULL,&clStatus);
+	cl_program  program = clCreateProgramWithSource(context,1,(const char **)&program_buffer,&program_size,&clStatus);
 
 	clStatus = clBuildProgram(program,1,devices_list,NULL,NULL,NULL);
 	cl_kernel kernel = clCreateKernel(program,"saxpy_kernel",&clStatus);
@@ -140,5 +140,4 @@ int main(void)
 	free(platforms);
 	free(devices_list);
 	return 0;
-
 }
