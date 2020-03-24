@@ -1,0 +1,23 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+CC	Makefile	/^CC=gcc$/;"	m
+CFLAGS	Makefile	/^CFLAGS=-std=c99 -Wall -DUNIX -g -DDEBUG$/;"	m
+DARWIN	Makefile	/^DARWIN = $(strip $(findstring DARWIN, $(OS)))$/;"	m
+FILE_NUM	get_kernel.c	7;"	d	file:
+INC_DIRS	Makefile	/^   INC_DIRS=. $(AMDAPPSDKROOT)\/include$/;"	m
+INC_DIRS	Makefile	/^   INC_DIRS=. $(NVSDKCOMPUTE_ROOT)\/OpenCL\/common\/inc$/;"	m
+LIBS	Makefile	/^	LIBS=-framework OpenCL$/;"	m
+LIBS	Makefile	/^LIBS=-lOpenCL$/;"	m
+LIB_DIRS	Makefile	/^		LIB_DIRS=$(AMDAPPSDKROOT)\/lib\/x86$/;"	m
+LIB_DIRS	Makefile	/^		LIB_DIRS=$(AMDAPPSDKROOT)\/lib\/x86_64$/;"	m
+OS	Makefile	/^OS = $(shell uname -s 2>\/dev\/null | tr [:lower:] [:upper:])$/;"	m
+PROC_TYPE	Makefile	/^PROC_TYPE = $(strip $(shell uname -m | grep 64))$/;"	m
+PROGRAM_FILE_1	get_kernel.c	5;"	d	file:
+PROGRAM_FILE_2	get_kernel.c	6;"	d	file:
+PROJ	Makefile	/^PROJ=get_kernel$/;"	m
+VECTOR_SIZE	get_kernel.c	8;"	d	file:
+main	get_kernel.c	/^int main(void)$/;"	f	signature:(void)

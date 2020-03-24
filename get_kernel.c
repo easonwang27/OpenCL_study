@@ -2,7 +2,9 @@
 #include <stdlib.h>
 #include <CL/cl.h>
 
-#define PROGRAM_FILE "get_kernel.cl"
+#define PROGRAM_FILE_1 "get_kernel.cl"
+#define PROGRAM_FILE_2 "bad.cl"
+#define FILE_NUM 2
 #define VECTOR_SIZE 1024
 
 int main(void)
@@ -11,8 +13,9 @@ int main(void)
     FILE *program_handle;
 	//Allocate space for vectors A,B,andc
 
-	size_t program_size, log_size;
-    char *program_buffer, *program_log;
+	size_t program_size[FILE_NUM], log_size;
+	char *program_buffer[FILE_NUM], *program_log;
+	const char *file_name[]= {PROGRAM_FILE_1,PROGRAM_FILE_2};
 	float alpha =2.0;
 
 	float *A = (float*)malloc(sizeof(float)*VECTOR_SIZE);
@@ -64,18 +67,20 @@ int main(void)
 		perror("clCreateContext error!\n");
 		exit(1);
 	}
-	program_handle = fopen(PROGRAM_FILE, "r");
-   if(program_handle == NULL) {
-      perror("Couldn't find the program file");
-      exit(1);
-   }
-   fseek(program_handle, 0, SEEK_END);
-   program_size = ftell(program_handle);
-   rewind(program_handle);
-   program_buffer = (char*)malloc(program_size + 1);
-   program_buffer[program_size] = '\0';
-   fread(program_buffer, sizeof(char), program_size, program_handle);
-   fclose(program_handle);
+	for(i =0 ;i < FILE_NUM;i++){
+		program_handle = fopen(file_name[i], "r");
+		if(program_handle == NULL) {
+		perror("Couldn't find the program file");
+		exit(1);
+		}
+		fseek(program_handle, 0, SEEK_END);
+		program_size[i] = ftell(program_handle);
+		rewind(program_handle);
+		program_buffer[i] = (char*)malloc(program_size[i] + 1);
+		program_buffer[i][program_size[i]] = '\0';
+		fread(program_buffer[i], sizeof(char), program_size[i], program_handle);
+		fclose(program_handle);
+	}
 	//create a command queue
 	cl_command_queue command_queue = clCreateCommandQueue(context,devices_list[0],0,&clStatus);
 	if(clStatus < 0)
@@ -100,7 +105,7 @@ int main(void)
 	clStatus = clEnqueueWriteBuffer(command_queue,B_clmem,CL_TRUE,0,VECTOR_SIZE*sizeof(float),
 			B,0,NULL,NULL);
 
-	cl_program  program = clCreateProgramWithSource(context,1,(const char **)&program_buffer,&program_size,&clStatus);
+	cl_program  program = clCreateProgramWithSource(context,2,(const char **)&program_buffer,program_size,&clStatus);
 
 	clStatus = clBuildProgram(program,1,devices_list,options,NULL,NULL);
 	if(clStatus < 0)
@@ -136,6 +141,10 @@ int main(void)
 		printf("%f * %f +%f = %f\n",alpha,A[i],B[i],C[i]);
 	}
 
+	for(i = 0;i < FILE_NUM;i++)
+	{
+		free(program_buffer[i]);
+	}
 	clStatus = clReleaseKernel(kernel);
 	clStatus = clReleaseProgram(program);
 	clStatus = clReleaseMemObject(A_clmem);
