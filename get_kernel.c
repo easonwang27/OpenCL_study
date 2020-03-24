@@ -28,6 +28,7 @@ int main(void)
 	cl_platform_id *platforms;
 	cl_int num_platforms;
 	cl_int  clStatus;
+	const char options[] = "-cl-std=CL1.1 -cl-mad-enable -Werror";
 	//set up the platforms
 	clStatus = clGetPlatformIDs(0,NULL,&num_platforms);
 	printf("this num_platforms =%d\n",num_platforms);
@@ -101,7 +102,7 @@ int main(void)
 
 	cl_program  program = clCreateProgramWithSource(context,1,(const char **)&program_buffer,&program_size,&clStatus);
 
-	clStatus = clBuildProgram(program,1,devices_list,NULL,NULL,NULL);
+	clStatus = clBuildProgram(program,1,devices_list,options,NULL,NULL);
 	cl_kernel kernel = clCreateKernel(program,"saxpy_kernel",&clStatus);
 	if(clStatus < 0)
 	{
