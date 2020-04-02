@@ -75,6 +75,8 @@ int main(void)
 		}
 		fseek(program_handle, 0, SEEK_END);
 		program_size[i] = ftell(program_handle);
+		printf("=====> program_size[%d] = %d\n",i,program_size[i]);
+		sleep(3);
 		rewind(program_handle);
 		program_buffer[i] = (char*)malloc(program_size[i] + 1);
 		program_buffer[i][program_size[i]] = '\0';
