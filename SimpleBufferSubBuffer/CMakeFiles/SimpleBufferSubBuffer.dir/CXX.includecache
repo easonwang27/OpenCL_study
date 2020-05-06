@@ -1,0 +1,30 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/eawang/work/opencl/opencl-book-samples/src/Chapter_7/SimpleBufferSubBuffer/info.hpp
+alloca.h
+-
+OpenCL/cl.h
+-
+CL/cl.h
+-
+
+/home/eawang/work/opencl/opencl-book-samples/src/Chapter_7/SimpleBufferSubBuffer/simple.cpp
+iostream
+-
+fstream
+-
+sstream
+-
+string
+-
+vector
+-
+info.hpp
+/home/eawang/work/opencl/opencl-book-samples/src/Chapter_7/SimpleBufferSubBuffer/info.hpp
+
